@@ -68,6 +68,46 @@ $roadProjects = count(array_filter($projects, fn($p) => ($p['project_type'] ?? '
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>پنل مدیریت - اداره کل امور عشایر چهارمحال و بختیاری</title>
     <link rel="stylesheet" href="assets/css/admin-panel.css">
+    <style>
+        .checkbox-cell {
+            text-align: center;
+            width: 50px;
+        }
+        .project-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .bulk-actions {
+            display: none;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            align-items: center;
+            gap: 15px;
+            border: 2px solid #dee2e6;
+        }
+        .bulk-actions.active {
+            display: flex;
+        }
+        .bulk-actions .selected-count {
+            font-weight: bold;
+            color: #495057;
+        }
+        .bulk-actions .btn {
+            white-space: nowrap;
+        }
+        .select-all-header {
+            text-align: center;
+            width: 50px;
+        }
+        #selectAllCheckbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <div class="header">
@@ -120,6 +160,14 @@ $roadProjects = count(array_filter($projects, fn($p) => ($p['project_type'] ?? '
             </small>
         </div>
 
+        <!-- عملیات گروهی -->
+        <div id="bulkActions" class="bulk-actions">
+            <span class="selected-count">📋 <span id="selectedCount">0</span> پروژه انتخاب شده است</span>
+            <a href="#" id="bulkExcelBtn" class="btn btn-success" onclick="exportBulk('excel')">📊 تبدیل به اکسل</a>
+            <a href="#" id="bulkPdfBtn" class="btn btn-info" onclick="exportBulk('pdf')">📄 تبدیل به PDF</a>
+            <button type="button" class="btn btn-red" onclick="clearSelection()">✕ لغو انتخاب</button>
+        </div>
+
         <!-- جدول پروژه‌ها -->
         <div class="projects-table">
             <div class="table-header">
@@ -141,6 +189,9 @@ $roadProjects = count(array_filter($projects, fn($p) => ($p['project_type'] ?? '
                     <table>
                         <thead>
                             <tr>
+                                <th class="select-all-header">
+                                    <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll()">
+                                </th>
                                 <th>ردیف</th>
                                 <th>کد پروژه</th>
                                 <th>نام پروژه</th>
@@ -154,6 +205,9 @@ $roadProjects = count(array_filter($projects, fn($p) => ($p['project_type'] ?? '
                         <tbody>
                             <?php foreach ($projects as $index => $project): ?>
                             <tr>
+                                <td class="checkbox-cell">
+                                    <input type="checkbox" class="project-checkbox" value="<?php echo htmlspecialchars($project['id']); ?>" data-project-id="<?php echo htmlspecialchars($project['id']); ?>" onchange="updateBulkActions()">
+                                </td>
                                 <td><?php echo $index + 1; ?></td>
                                 <td><small><?php echo htmlspecialchars($project['id'] ?? '-'); ?></small></td>
                                 <td>
@@ -218,6 +272,73 @@ $roadProjects = count(array_filter($projects, fn($p) => ($p['project_type'] ?? '
             </div>
         </div>
     </div>
+    
+    <script>
+        // تابع برای انتخاب/لغو انتخاب همه
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            const checkboxes = document.querySelectorAll('.project-checkbox');
+            checkboxes.forEach(cb => {
+                cb.checked = selectAllCheckbox.checked;
+            });
+            updateBulkActions();
+        }
+        
+        // تابع برای به‌روزرسانی وضعیت عملیات گروهی
+        function updateBulkActions() {
+            const checkboxes = document.querySelectorAll('.project-checkbox:checked');
+            const count = checkboxes.length;
+            const bulkActionsDiv = document.getElementById('bulkActions');
+            const selectedCountSpan = document.getElementById('selectedCount');
+            
+            selectedCountSpan.textContent = count;
+            
+            if (count > 0) {
+                bulkActionsDiv.classList.add('active');
+            } else {
+                bulkActionsDiv.classList.remove('active');
+                document.getElementById('selectAllCheckbox').checked = false;
+            }
+            
+            // به‌روزرسانی چک‌باکس انتخاب همه
+            const allCheckboxes = document.querySelectorAll('.project-checkbox');
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            selectAllCheckbox.checked = count === allCheckboxes.length && count > 0;
+            selectAllCheckbox.indeterminate = count > 0 && count < allCheckboxes.length;
+        }
+        
+        // تابع برای پاک کردن انتخاب
+        function clearSelection() {
+            const checkboxes = document.querySelectorAll('.project-checkbox');
+            checkboxes.forEach(cb => {
+                cb.checked = false;
+            });
+            document.getElementById('selectAllCheckbox').checked = false;
+            document.getElementById('selectAllCheckbox').indeterminate = false;
+            updateBulkActions();
+        }
+        
+        // تابع برای صادرات گروهی
+        function exportBulk(type) {
+            const checkboxes = document.querySelectorAll('.project-checkbox:checked');
+            const ids = [];
+            checkboxes.forEach(cb => {
+                ids.push(cb.value);
+            });
+            
+            if (ids.length === 0) {
+                alert('هیچ پروژه‌ای انتخاب نشده است!');
+                return;
+            }
+            
+            const idsParam = ids.join(',');
+            if (type === 'excel') {
+                window.open('export-excel.php?ids=' + encodeURIComponent(idsParam), '_blank');
+            } else if (type === 'pdf') {
+                window.open('export-pdf.php?ids=' + encodeURIComponent(idsParam), '_blank');
+            }
+        }
+    </script>
     <script src="assets/js/admin-panel.js"></script>
 </body>
 </html>

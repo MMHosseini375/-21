@@ -16,12 +16,23 @@ if (file_exists($projectsFile)) {
 // اگر شناسه تکی ارسال شده باشد
 $singleId = $_GET['single_id'] ?? '';
 
+// اگر چند شناسه ارسال شده باشد (برای صادرات گروهی)
+$bulkIds = $_GET['ids'] ?? '';
+
 if (!empty($singleId)) {
     $projects = array_filter($allProjects, function($p) use ($singleId) {
         return ($p['id'] ?? '') === $singleId;
     });
     $projects = array_values($projects);
     $filename = 'project_' . $singleId . '_' . date('Y-m-d_His') . '.csv';
+} elseif (!empty($bulkIds)) {
+    // صادرات گروهی بر اساس IDهای انتخاب شده
+    $idsArray = explode(',', $bulkIds);
+    $projects = array_filter($allProjects, function($p) use ($idsArray) {
+        return in_array($p['id'] ?? '', $idsArray);
+    });
+    $projects = array_values($projects);
+    $filename = 'selected_projects_' . count($projects) . '_' . date('Y-m-d_His') . '.csv';
 } else {
     $search = $_GET['search'] ?? '';
     $projects = $allProjects;
