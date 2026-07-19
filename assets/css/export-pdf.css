@@ -1,0 +1,177 @@
+@media print {
+    body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .no-print {
+        display: none;
+    }
+
+    table {
+        page-break-inside: auto;
+    }
+
+    tr {
+        page-break-inside: avoid;
+    }
+
+    .detail-section {
+        page-break-inside: avoid;
+    }
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Tahoma', 'IRANSans', Arial, sans-serif;
+    padding: 20px;
+    color: #333;
+    direction: rtl;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    border-bottom: 3px solid #1a237e;
+}
+
+.header h1 {
+    color: #1a237e;
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.header h2 {
+    color: #c9a84c;
+    font-size: 18px;
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th {
+    background: #1a237e;
+    color: white;
+    padding: 12px;
+    text-align: center;
+    font-size: 14px;
+}
+
+td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+    font-size: 13px;
+}
+
+tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+.print-btn {
+    background: #1a237e;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 20px auto;
+    display: block;
+}
+
+.print-btn:hover {
+    background: #283593;
+}
+
+/* استایل‌های جزئیات پروژه تکی */
+.project-title {
+    background: linear-gradient(135deg, #c9a84c, #ffd700);
+    color: #1a237e;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0;
+    border: 2px solid #1a237e;
+}
+
+.detail-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-right: 4px solid #c9a84c;
+}
+
+.detail-section h4 {
+    color: #1a237e;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #c9a84c;
+}
+
+.detail-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.detail-item {
+    flex: 1 1 200px;
+    padding: 10px;
+    background: white;
+    border-radius: 5px;
+    border: 1px solid #e0e0e0;
+}
+
+.detail-item label {
+    display: block;
+    color: #666;
+    font-size: 11px;
+    margin-bottom: 3px;
+}
+
+.detail-item span {
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+}
+
+.detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+}
+
+.detail-table th {
+    background: #1a237e;
+    color: white;
+    padding: 8px;
+    font-size: 12px;
+}
+
+.detail-table td {
+    padding: 8px;
+    font-size: 12px;
+    border: 1px solid #ddd;
+}
