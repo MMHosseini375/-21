@@ -14,6 +14,7 @@ if (file_exists($projectsFile)) {
 }
 
 $singleId = $_GET['single_id'] ?? '';
+$bulkIds = $_GET['ids'] ?? '';
 
 if (!empty($singleId)) {
     $projects = array_filter($allProjects, function($p) use ($singleId) {
@@ -21,6 +22,14 @@ if (!empty($singleId)) {
     });
     $projects = array_values($projects);
     $reportTitle = 'گزارش تک پروژه';
+} elseif (!empty($bulkIds)) {
+    // گزارش گروهی بر اساس IDهای انتخاب شده
+    $idsArray = explode(',', $bulkIds);
+    $projects = array_filter($allProjects, function($p) use ($idsArray) {
+        return in_array($p['id'] ?? '', $idsArray);
+    });
+    $projects = array_values($projects);
+    $reportTitle = 'گزارش پروژه‌های انتخاب شده';
 } else {
     $search = $_GET['search'] ?? '';
     $projects = $allProjects;
